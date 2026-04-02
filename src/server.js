@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config({ override: true });
+
 import app from "./app.js";
 import connectDB from "./database.js";
 
