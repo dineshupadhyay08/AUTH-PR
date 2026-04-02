@@ -46,6 +46,8 @@ export async function getMe(req, res) {
   }
 
   const decoded = jwt.verify(token, config.JWT_SECRET);
+  console.log(decoded);
+  console.log("SECRET:", process.env.JWT_SECRET);
 
   const user = await userModel.findById(decoded.id).select("-password");
 }
