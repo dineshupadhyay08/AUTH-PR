@@ -23,7 +23,7 @@ export async function register(req, res) {
     password: hashedPassword,
   });
 
-  const token = jwt.sign({ id: user._id }, config.jwtSecret, {
+  const token = jwt.sign({ id: user._id }, config.JWT_SECRET, {
     expiresIn: "1h",
   });
   res.status(201).json({
@@ -38,4 +38,14 @@ export async function register(req, res) {
 
 export async function getMe(req, res) {
   const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({
+      message: "No token provided",
+    });
+  }
+
+  const decoded = jwt.verify(token, config.JWT_SECRET);
+
+  const user = await userModel.findById(decoded.id).select("-password");
 }

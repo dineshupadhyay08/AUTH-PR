@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  userSchema: {
+  username: {
+    // ✅ correct field name
     type: String,
     required: [true, "Username is required"],
     unique: true,
