@@ -35,3 +35,7 @@ export async function register(req, res) {
     token,
   });
 }
+
+export async function getMe(req, res) {
+  const token = req.headers.authorization?.split(" ")[1];
+}
