@@ -48,8 +48,8 @@ export async function getMe(req, res) {
 
     // ✅ verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("AUTH HEADER:", req.headers.authorization);
-    console.log("SECRET:", process.env.JWT_SECRET);
+    // console.log("AUTH HEADER:", req.headers.authorization);
+    // console.log("SECRET:", process.env.JWT_SECRET);
 
     // ✅ user fetch from DB
     const user = await userModel.findById(decoded.id).select("-password");
