@@ -23,8 +23,8 @@ export async function register(req, res) {
     password: hashedPassword,
   });
 
-  const token = jwt.sign({ id: user._id }, config.JWT_SECRET, {
-    expiresIn: "1h",
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
   });
   res.status(201).json({
     message: "User registered successfully",
@@ -37,17 +37,36 @@ export async function register(req, res) {
 }
 
 export async function getMe(req, res) {
-  const token = req.headers.authorization?.split(" ")[1];
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
 
-  if (!token) {
-    return res.status(401).json({
-      message: "No token provided",
+    if (!token) {
+      return res.status(401).json({
+        message: "No token provided",
+      });
+    }
+
+    // ✅ verify token
+    const decoded = jwt.verify(token, config.JWT_SECRET);
+
+    // ✅ user fetch from DB
+    const user = await userModel.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // ✅ response
+    res.status(200).json({
+      message: "User info retrieved successfully",
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      message: "Invalid token",
     });
   }
-
-  const decoded = jwt.verify(token, config.JWT_SECRET);
-  console.log(decoded);
-  console.log("SECRET:", process.env.JWT_SECRET);
-
-  const user = await userModel.findById(decoded.id).select("-password");
 }
